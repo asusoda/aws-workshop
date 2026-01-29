@@ -7,7 +7,7 @@ description = "Create the IAM policy for workshop participants"
 run = """
 aws iam create-policy \
   --policy-name WorkshopParticipantPolicy \
-  --policy-document file://workshop-policy.json
+  --policy-document file://workshop-policy.json 2>/dev/null || echo "Policy already exists"
 """
 
 [tasks.create-users]

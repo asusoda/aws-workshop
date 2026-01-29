@@ -4,9 +4,9 @@ Scripts to provision sandboxed IAM users for an intro AWS workshop. The policy i
 
 ## Prerequisites
 
-- [mise](https://mise.jdx.dev/installing-mise.html)
-- [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-  - to configure credentials, i did the quick unsafe path by yoinking root user keys from [here](https://us-east-1.console.aws.amazon.com/iam/home?region=us-east-1#/security_credentials) and put them in my local `credentials` file according to [these docs](https://docs.aws.amazon.com/sdkref/latest/guide/access-iam-users.html)
+- [mise](https://mise.jdx.dev/installing-mise.html) for task running
+- [aws cli v2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+  - to configure credentials, i did the quick unsafe path by yoinking root user keys from [here](https://us-east-1.console.aws.amazon.com/iam/home?region=us-east-1#/security_credentials) (after logging into shared SoDA root account using credentials from The Login Sheet) and put them in my local `credentials` file according to [these docs](https://docs.aws.amazon.com/sdkref/latest/guide/access-iam-users.html)
 
 ## Setup
 

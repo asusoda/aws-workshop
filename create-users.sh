@@ -32,7 +32,7 @@ for i in $(seq -w 1 "$USER_COUNT"); do
     --password "$PASSWORD" \
     --no-password-reset-required
 
-  KEYS=$(aws iam create-access-key --user-name "$USERNAME")
+  KEYS=$(aws iam create-access-key --user-name "$USERNAME" --output json)
   ACCESS_KEY=$(echo "$KEYS" | jq -r '.AccessKey.AccessKeyId')
   SECRET_KEY=$(echo "$KEYS" | jq -r '.AccessKey.SecretAccessKey')
 

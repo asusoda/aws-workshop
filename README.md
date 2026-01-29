@@ -1,27 +1,29 @@
 # AWS Workshop
 
-Scripts to provision 50 sandboxed IAM users for an intro AWS workshop. Participants get EC2 and S3 access without needing credit cards.
+Scripts to provision sandboxed IAM users for an intro AWS workshop. The policy is set up so that only the services required for the workshop are allowed.
+
+## Prerequisites
+
+- [mise](https://mise.jdx.dev/installing-mise.html)
+- [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+  - to configure credentials, i did the quick unsafe path by yoinking root user keys from [here](https://us-east-1.console.aws.amazon.com/iam/home?region=us-east-1#/security_credentials) and put them in my local `credentials` file according to [these docs](https://docs.aws.amazon.com/sdkref/latest/guide/access-iam-users.html)
 
 ## Setup
 
 ```bash
-# 1. Create the IAM policy
-aws iam create-policy \
-  --policy-name WorkshopParticipantPolicy \
-  --policy-document file://workshop-policy.json
+mise run create-policy   # one-time setup
+mise run create-users    # creates 50 users, outputs to workshop-credentials.csv
+```
 
-# 2. Create users (outputs credentials to workshop-credentials.csv)
-POLICY_ARN=arn:aws:iam::ACCOUNT_ID:policy/WorkshopParticipantPolicy ./create-users.sh
+Test with fewer users first:
+```bash
+USER_COUNT=2 mise run create-users
 ```
 
 ## Cleanup
 
+Terminates all EC2 instances, deletes `workshop-*` S3 buckets, and removes IAM users.
+
 ```bash
-POLICY_ARN=arn:aws:iam::ACCOUNT_ID:policy/WorkshopParticipantPolicy ./cleanup-workshop.sh
+mise run cleanup
 ```
-
-## What participants can do
-
-- Launch t2.micro/t3.micro EC2 instances
-- Create S3 buckets prefixed with `workshop-`
-- Expensive services (RDS, EKS, etc.) are explicitly denied

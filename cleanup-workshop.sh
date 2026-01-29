@@ -2,13 +2,19 @@
 
 set -euo pipefail
 
-POLICY_ARN="${POLICY_ARN:-}"
+AWS_ACCOUNT_ID="${AWS_ACCOUNT_ID:-}"
+USER_COUNT="${USER_COUNT:-50}"
 
-if [ -z "$POLICY_ARN" ]; then
-  echo "Error: POLICY_ARN environment variable is required"
-  echo "Usage: POLICY_ARN=arn:aws:iam::123456789012:policy/WorkshopParticipantPolicy ./cleanup-workshop.sh"
-  exit 1
+if [ -z "$AWS_ACCOUNT_ID" ]; then
+  AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text 2>/dev/null) || {
+    echo "Error: Could not determine AWS account ID. Set AWS_ACCOUNT_ID or configure AWS CLI."
+    exit 1
+  }
 fi
+
+POLICY_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:policy/WorkshopParticipantPolicy"
+
+echo "Account: $AWS_ACCOUNT_ID"
 
 echo "Terminating all EC2 instances..."
 INSTANCE_IDS=$(aws ec2 describe-instances \
@@ -29,7 +35,7 @@ for bucket in $(aws s3 ls | grep 'workshop-' | awk '{print $3}'); do
 done
 
 echo "Deleting workshop IAM users..."
-for i in $(seq -w 1 50); do
+for i in $(seq -w 1 "$USER_COUNT"); do
   USERNAME="workshop-user-${i}"
   echo "Deleting $USERNAME..."
 

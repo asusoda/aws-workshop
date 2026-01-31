@@ -27,3 +27,16 @@ Terminates all EC2 instances, deletes `workshop-*` S3 buckets, and removes IAM u
 ```bash
 mise run cleanup
 ```
+
+## Distributing credentials
+
+Mail merge via Google Sheets + Apps Script:
+
+1. Create a Google Sheet with two tabs:
+   - `credentials` - import `workshop-credentials.csv`
+   - `attendees` - import checked-in users export from your event platform
+2. Open **Extensions → Apps Script**
+3. Paste contents of `mail-merge.js`
+4. Click **Run** and authorize when prompted
+
+The script assigns credentials to checked-in attendees in order and emails each their login info.

@@ -77,7 +77,9 @@ function sendCredentials() {
 
     const body = `Hi ${firstName}!
 
-Here are your AWS workshop credentials:
+Here's the demo code: https://github.com/asusoda/aws-workshop-boilerplate
+
+Here are your AWS workshop credentials. This IAM user and all its resources will be deleted after the workshop!
 
 Console login: ${consoleUrl}
 Username: ${username}
@@ -87,7 +89,7 @@ CLI credentials (optional):
 Access Key ID: ${accessKey}
 Secret Access Key: ${secretKey}
 
-See you at the workshop!`;
+GLHF!`;
 
     GmailApp.sendEmail(email, subject, body);
     console.log(`Sent ${username} to ${email}`);

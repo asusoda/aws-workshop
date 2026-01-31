@@ -35,7 +35,7 @@ Mail merge via Google Apps Script:
 1. Create a new Google Sheet, open **Extensions → Apps Script**
 2. Paste contents of `mail-merge.js`
 3. Replace `CREDENTIALS_CSV` with contents of `workshop-credentials.csv`
-4. Replace `ATTENDEES_CSV` with attendee names/emails (just `First Name,Email` columns)
+4. Replace `ATTENDEES_CSV` with attendees CSV exported from sun devil central
 5. Click **Run** and authorize when prompted
 
 The script assigns credentials to attendees in order and emails each their login info.

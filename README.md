@@ -30,13 +30,12 @@ mise run cleanup
 
 ## Distributing credentials
 
-Mail merge via Google Sheets + Apps Script:
+Mail merge via Google Apps Script:
 
-1. Create a Google Sheet with two tabs:
-   - `credentials` - import `workshop-credentials.csv`
-   - `attendees` - import checked-in users export from your event platform
-2. Open **Extensions → Apps Script**
-3. Paste contents of `mail-merge.js`
-4. Click **Run** and authorize when prompted
+1. Create a new Google Sheet, open **Extensions → Apps Script**
+2. Paste contents of `mail-merge.js`
+3. Replace `CREDENTIALS_CSV` with contents of `workshop-credentials.csv`
+4. Replace `ATTENDEES_CSV` with attendee names/emails (just `First Name,Email` columns)
+5. Click **Run** and authorize when prompted
 
-The script assigns credentials to checked-in attendees in order and emails each their login info.
+The script assigns credentials to attendees in order and emails each their login info.

@@ -1,0 +1,23 @@
+[env]
+AWS_PROFILE = "{{ env.AWS_PROFILE | default(value='soda') }}"
+USER_COUNT = "{{ env.USER_COUNT | default(value='50') }}"
+
+[tasks.create-policy]
+description = "Create the IAM policy for workshop participants"
+run = """
+aws iam create-policy \
+  --policy-name WorkshopParticipantPolicy \
+  --policy-document file://workshop-policy.json 2>/dev/null || echo "Policy already exists"
+"""
+
+[tasks.create-users]
+description = "Create workshop IAM users"
+run = "./create-users.sh"
+
+[tasks.cleanup]
+description = "Delete all workshop resources and users"
+run = "./cleanup-workshop.sh"
+
+[tasks.account-id]
+description = "Print your AWS account ID"
+run = "aws sts get-caller-identity --query Account --output text"

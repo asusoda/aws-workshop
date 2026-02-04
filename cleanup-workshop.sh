@@ -4,6 +4,7 @@ set -euo pipefail
 
 AWS_ACCOUNT_ID="${AWS_ACCOUNT_ID:-}"
 USER_COUNT="${USER_COUNT:-50}"
+MAX_PARALLEL="${MAX_PARALLEL:-10}"
 
 if [ -z "$AWS_ACCOUNT_ID" ]; then
   AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text 2>/dev/null) || {
@@ -34,21 +35,28 @@ for bucket in $(aws s3 ls | grep 'workshop-' | awk '{print $3}'); do
   aws s3 rb "s3://$bucket" --force
 done
 
-echo "Deleting workshop IAM users..."
-for i in $(seq -w 1 "$USER_COUNT"); do
-  USERNAME="workshop-user-${i}"
-  echo "Deleting $USERNAME..."
+echo "Deleting workshop IAM users (max $MAX_PARALLEL in parallel)..."
+
+delete_user() {
+  local username="$1"
+  local policy_arn="$2"
+
+  echo "Deleting $username..."
 
   aws iam detach-user-policy \
-    --user-name "$USERNAME" \
-    --policy-arn "$POLICY_ARN" 2>/dev/null || true
+    --user-name "$username" \
+    --policy-arn "$policy_arn" 2>/dev/null || true
 
-  for key in $(aws iam list-access-keys --user-name "$USERNAME" --query 'AccessKeyMetadata[].AccessKeyId' --output text 2>/dev/null); do
-    aws iam delete-access-key --user-name "$USERNAME" --access-key-id "$key"
+  for key in $(aws iam list-access-keys --user-name "$username" --query 'AccessKeyMetadata[].AccessKeyId' --output text 2>/dev/null); do
+    aws iam delete-access-key --user-name "$username" --access-key-id "$key"
   done
 
-  aws iam delete-login-profile --user-name "$USERNAME" 2>/dev/null || true
-  aws iam delete-user --user-name "$USERNAME" 2>/dev/null || true
-done
+  aws iam delete-login-profile --user-name "$username" 2>/dev/null || true
+  aws iam delete-user --user-name "$username" 2>/dev/null || true
+}
+
+export -f delete_user
+
+seq -w 1 "$USER_COUNT" | xargs -P "$MAX_PARALLEL" -I {} bash -c 'delete_user "workshop-user-{}" "$1"' _ "$POLICY_ARN"
 
 echo "Cleanup complete!"
